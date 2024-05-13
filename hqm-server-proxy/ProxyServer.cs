@@ -31,10 +31,7 @@ namespace hqm_server_proxy
 
             var _master_timer = new Timer(SendMasterQuery, null, TimeSpan.Zero, TimeSpan.FromSeconds(10));
 
-            if (!Console.IsInputRedirected && Console.KeyAvailable)
-            {
-                Console.ReadKey();
-            }
+            while (true) { }
         }
 
         private void ProcessRecieve(byte[] data, IPEndPoint source)
