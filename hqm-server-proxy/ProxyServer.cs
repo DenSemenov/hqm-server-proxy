@@ -32,7 +32,7 @@ namespace hqm_server_proxy
 
             var _master_timer = new Timer(SendMasterQuery, null, TimeSpan.Zero, TimeSpan.FromSeconds(10));
 
-            while (true) { }
+            while (true) { Thread.Sleep(Int32.MaxValue); }
         }
 
         private void ProcessRecieve(byte[] data, IPEndPoint source)
