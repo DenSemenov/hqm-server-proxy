@@ -60,37 +60,37 @@ namespace hqm_server_proxy
 
         private void ProcessRecieveFromServer(byte[] data, IPEndPoint client)
         {
-            var buf = new byte[4096];
-
             var parser = new HQMMessageReader(data);
-            var header = parser.ReadBytesAligned(4);
+            var h = parser.ReadBytesAligned(4);
             var command = parser.ReadByteAligned();
-
-            if (command == 1)
+            if (h.ToArray().SequenceEqual(header))
             {
-                //var v = parser.ReadBits(8);
-                //var p = parser.ReadU32Aligned();
-                //var pc = parser.ReadBits(8);
-                //var c = parser.ReadBits(4);
-                //var tm = parser.ReadBits(4);
-                parser.pos = 96;
-                var n = parser.ReadBytesAligned(32);
-                var nm = Encoding.UTF8.GetString(n.ToArray());
-
-                var newName = nm.Replace("\0", "") +" (Proxy)";
-                var newNameBytes = Encoding.UTF8.GetBytes(newName);
-
-                var p = 12;
-                foreach (var c in newNameBytes)
+                if (command == 1)
                 {
-                    data[p] = c;
-                    p++;
+                    //var v = parser.ReadBits(8);
+                    //var p = parser.ReadU32Aligned();
+                    //var pc = parser.ReadBits(8);
+                    //var c = parser.ReadBits(4);
+                    //var tm = parser.ReadBits(4);
+                    parser.pos = 96;
+                    var n = parser.ReadBytesAligned(32);
+                    var nm = Encoding.UTF8.GetString(n.ToArray());
+
+                    var newName = nm.Replace("\0", "") + " (Proxy)";
+                    var newNameBytes = Encoding.UTF8.GetBytes(newName);
+
+                    var p = 12;
+                    foreach (var c in newNameBytes)
+                    {
+                        data[p] = c;
+                        p++;
+                    }
+                    _socket.Send(data, client);
                 }
-                _socket.Send(data, client);
-            }
-            else
-            {
-                _socket.Send(data, client);
+                else
+                {
+                    _socket.Send(data, client);
+                }
             }
         }
 
