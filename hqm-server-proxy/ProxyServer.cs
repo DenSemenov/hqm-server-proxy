@@ -131,7 +131,7 @@ namespace hqm_server_proxy
 
         private int NextFreePort(int port = 0)
         {
-            port = new Random().Next(10000, 65535);
+            port = new Random().Next(27580, 28580);
             while (!IsFree(port))
             {
                 port += 1;
