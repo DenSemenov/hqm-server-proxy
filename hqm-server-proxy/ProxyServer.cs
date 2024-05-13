@@ -44,13 +44,11 @@ namespace hqm_server_proxy
                 _knownClients.Add(client);
                 newSocket.BeginReceive(new AsyncCallback(OnUdpFromServer), client);
                 newSocket.Send(data, new IPEndPoint(IPAddress.Parse(_config.TargetIp), _config.TargetPort));
-                Console.WriteLine("Sent to server: {0}", data.Length);
             }
             else
             {
                 c.Socket.BeginReceive(new AsyncCallback(OnUdpFromServer), c);
                 c.Socket.Send(data, new IPEndPoint(IPAddress.Parse(_config.TargetIp), _config.TargetPort));
-                Console.WriteLine("Sent to server: {0}", data.Length);
             }
         }
 
@@ -83,12 +81,10 @@ namespace hqm_server_proxy
                     p++;
                 }
                 _socket.Send(data, client);
-                Console.WriteLine("Sent to user: {0}", data.Length);
             }
             else
             {
                 _socket.Send(data, client);
-                Console.WriteLine("Sent to user: {0}", data.Length);
             }
         }
 
