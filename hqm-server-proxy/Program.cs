@@ -27,6 +27,4 @@ async Task Main()
     });
 
     Task.WaitAll(proxyTasks.ToArray());
-
-    Console.ReadKey();
 }
