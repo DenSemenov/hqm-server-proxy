@@ -37,9 +37,7 @@ namespace hqm_server_proxy
 
         private void ProcessRecieve(byte[] data, IPEndPoint source)
         {
-            var parser = new HQMMessageReader(data);
-            var h = parser.ReadBytesAligned(4);
-            if (h.ToArray().SequenceEqual(header)) {
+            if (header.SequenceEqual(data.Take(4))) {
 
                 var c = _knownClients.FirstOrDefault(x => x.Client.Equals(source));
                 if (c == null)
@@ -60,20 +58,12 @@ namespace hqm_server_proxy
 
         private void ProcessRecieveFromServer(byte[] data, IPEndPoint client)
         {
-            var parser = new HQMMessageReader(data);
-            var h = parser.ReadBytesAligned(4);
-            var command = parser.ReadByteAligned();
-            if (h.ToArray().SequenceEqual(header))
+            var command = data[4];
+            if (header.SequenceEqual(data.Take(4)))
             {
                 if (command == 1)
                 {
-                    //var v = parser.ReadBits(8);
-                    //var p = parser.ReadU32Aligned();
-                    //var pc = parser.ReadBits(8);
-                    //var c = parser.ReadBits(4);
-                    //var tm = parser.ReadBits(4);
-                    parser.pos = 96;
-                    var n = parser.ReadBytesAligned(32);
+                    var n = data.Skip(12);
                     var nm = Encoding.UTF8.GetString(n.ToArray());
 
                     var newName = nm.Replace("\0", "") + " (Proxy)";
