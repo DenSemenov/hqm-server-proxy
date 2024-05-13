@@ -13,6 +13,7 @@ namespace hqm_server_proxy
         const string masterUrl = "https://sam2.github.io/HQMMasterServerEndpoint/";
         private string masterIp = "66.226.72.227";
         private int masterPort = 27590;
+        private byte[] header = new byte[] { 0x48, 0x6f, 0x63, 0x6b };
         private UdpClient _socket;
         private Config _config;
         private List<UdpProxyClient> _knownClients = new List<UdpProxyClient>();
@@ -36,19 +37,24 @@ namespace hqm_server_proxy
 
         private void ProcessRecieve(byte[] data, IPEndPoint source)
         {
-            var c = _knownClients.FirstOrDefault(x => x.Client.Equals(source));
-            if (c == null)
-            {
-                var newSocket = new UdpClient(NextFreePort());
-                var client = new UdpProxyClient { Socket = newSocket, Client = source };
-                _knownClients.Add(client);
-                newSocket.BeginReceive(new AsyncCallback(OnUdpFromServer), client);
-                newSocket.Send(data, new IPEndPoint(IPAddress.Parse(_config.TargetIp), _config.TargetPort));
-            }
-            else
-            {
-                c.Socket.BeginReceive(new AsyncCallback(OnUdpFromServer), c);
-                c.Socket.Send(data, new IPEndPoint(IPAddress.Parse(_config.TargetIp), _config.TargetPort));
+            var parser = new HQMMessageReader(data);
+            var h = parser.ReadBytesAligned(4);
+            if (h.ToArray().SequenceEqual(header)) {
+
+                var c = _knownClients.FirstOrDefault(x => x.Client.Equals(source));
+                if (c == null)
+                {
+                    var newSocket = new UdpClient(NextFreePort());
+                    var client = new UdpProxyClient { Socket = newSocket, Client = source };
+                    _knownClients.Add(client);
+                    newSocket.BeginReceive(new AsyncCallback(OnUdpFromServer), client);
+                    newSocket.Send(data, new IPEndPoint(IPAddress.Parse(_config.TargetIp), _config.TargetPort));
+                }
+                else
+                {
+                    c.Socket.BeginReceive(new AsyncCallback(OnUdpFromServer), c);
+                    c.Socket.Send(data, new IPEndPoint(IPAddress.Parse(_config.TargetIp), _config.TargetPort));
+                }
             }
         }
 
