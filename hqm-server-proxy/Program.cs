@@ -26,5 +26,5 @@ async Task Main()
         task.Start();
     });
 
-    Task.WaitAll(proxyTasks.ToArray());
+    //Task.WaitAll(proxyTasks.ToArray());
 }
