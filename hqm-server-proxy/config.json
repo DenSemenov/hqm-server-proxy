@@ -1,14 +1,10 @@
 {
+  "Name": "Test",
   "Servers": [
     {
       "Port": 27585,
-      "TargetIp": "212.193.60.179",
+      "TargetIp": "85.143.172.20",
       "TargetPort": 27585
     },
-    {
-      "Port": 27586,
-      "TargetIp": "212.193.60.179",
-      "TargetPort": 27586
-    }
   ]
 }

@@ -16,7 +16,7 @@ async Task Main()
 
     foreach (var config in mainConfig.Servers)
     {
-        var proxyServer = new ProxyServer(config);
+        var proxyServer = new ProxyServer(config, mainConfig.Name);
 
         proxyTasks.Add(new Task(async () => await proxyServer.Run()));
     }

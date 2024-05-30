@@ -16,11 +16,13 @@ namespace hqm_server_proxy
         private byte[] header = new byte[] { 0x48, 0x6f, 0x63, 0x6b };
         private UdpClient _socket;
         private Config _config;
+        private string _name;
         private List<UdpProxyClient> _knownClients = new List<UdpProxyClient>();
-        public ProxyServer(Config config)
+        public ProxyServer(Config config, string name)
         {
             _config = config;
             _socket = new UdpClient(_config.Port);
+            _name = name;
         }
 
         public async Task Run()
@@ -66,7 +68,7 @@ namespace hqm_server_proxy
                     var n = data.Skip(12);
                     var nm = Encoding.UTF8.GetString(n.ToArray());
 
-                    var newName = nm.Replace("\0", "") + " (Proxy)";
+                    var newName = nm.Replace("\0", "") + " ("+_name+" Proxy)";
                     var newNameBytes = Encoding.UTF8.GetBytes(newName);
 
                     var p = 12;
