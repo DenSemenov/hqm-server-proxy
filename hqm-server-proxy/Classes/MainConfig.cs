@@ -9,6 +9,6 @@ namespace hqm_server_proxy.Classes
     public class MainConfig
     {
         public string Name { get; set; }
-        public List<Config> Servers { get; set; } = new List<Config>();
+        public Config Config { get; set; }
     }
 }
